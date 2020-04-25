@@ -1,11 +1,12 @@
 #!/bin/bash
 
 ## Environment initialization
-#   0.group and user
-#   1.nameserver 8.8.8.8
-#   2.vim
-#   3.python 3.5.4
-#   4.nginx 1.18.0
+#   1.lrzsz tool
+#   2.group and user
+#   3.nameserver 8.8.8.8
+#   4.vim
+#   5.python 3.5.4
+#   6.nginx 1.18.0
 # 
 # Development environment
 #
@@ -33,6 +34,9 @@ else
     echo "tmp_dir '${tmp_dir}' already exist, exit installation"
     exit 0
 fi
+
+# lrzsz tool
+yum install -y lrzsz
 
 # add group and users
 init_passwd="E2,cEk7eDX.T6fD_"
@@ -66,6 +70,7 @@ ln -sf /usr/local/python3/bin/pip3 /usr/bin/pip
 
 # fix yum's python version
 sed -i "1s/python/python2.7/g" /usr/bin/yum
+sed -i "1s/python/python2.7/g" /usr/libexec/urlgrabber-ext-down
 
 # nginx 1.18.0
 # install pcre
@@ -91,4 +96,7 @@ groupadd www
 useradd -g www www -s /sbin/nologin
 
 # config nginx
-# /usr/local/webserver/nginx/conf/nginx.conf
+cd ${tmp_dir}
+cd ..
+unalias cp
+cp -f config/nginx_dev.conf /usr/local/nginx/conf/nginx.conf
