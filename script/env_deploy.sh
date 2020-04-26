@@ -23,6 +23,7 @@ config_dir=${root_dir}/config
 
 nameserver="8.8.8.8"
 init_passwd="E2,cEk7eDX.T6fD_"
+developers=(lixiong, jiangwy)
 
 path_py3="/usr/local/python3"
 path_nginx="/usr/local/nginx"
@@ -65,34 +66,28 @@ function toolsInstall() {
 
 # add group and users
 function addGroupsAndUsers() {
-    # group for developers
-    groupadd develop
-    # group for web
+    # group for web(nginx)
     groupadd www
-    # group for server
-    groupadd server
-
-    useradd -g develop lixiong
-    useradd -g develop jiangwy
     # forbid remote login
     useradd -g www www -s /sbin/nologin
+
+    # group for server
+    groupadd server
     # add user "server" to run service
     useradd -g server server
-
-    # set init password
-    echo "${init_passwd}" | passwd --stdin lixiong
-    echo "${init_passwd}" | passwd --stdin jiangwy
     echo "${init_passwd}" | passwd --stdin server
 
-    # add developers to web and server group
-    usermod -a -G www lixiong
-    usermod -a -G www jiangwy
-    usermod -a -G server lixiong
-    usermod -a -G server jiangwy
-    # delete from group
-    # gpasswd -d user group
+    # group for developers
+    groupadd develop
+    for user in ${developers[*]}; do
+        useradd -g develop ${user}
+        echo "${init_passwd}" | passwd --stdin ${user}
+        # add developers to web and server group
+        usermod -a -G www ${user}
+        usermod -a -G server ${user}
+    done
 
-    # let /home/* can be accessed by group
+    # let /home/* can be accessed by all developers
     chmod 770 /home/*
 }
 
@@ -163,6 +158,9 @@ function main() {
 
     log "Install nginx..."
     installNginx >/dev/null
+
+    log "Install uwsgi"
+    pip install uwsgi >/dev/null
 
     log "Installation complete!"
 }
