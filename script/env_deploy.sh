@@ -1,11 +1,10 @@
 #!/bin/bash
 
 ## Environment initialization
-#   1.nameserver 8.8.8.8
-#   2.tools
-#   3.group and user
-#   4.python 3.5.4
-#   5.nginx 1.18.0
+#   1.tools
+#   2.group and user
+#   3.python 3.5.4
+#   4.nginx 1.18.0
 #
 ## Args:
 #   ${1}: root dir
@@ -21,11 +20,10 @@ root_dir=${1}
 tmp_dir=${root_dir}/tmp
 config_dir=${root_dir}/config
 
-nameserver="8.8.8.8"
 init_passwd="E2,cEk7eDX.T6fD_"
-developers=(lixiong, jiangwy)
+developers=(lixiong jiangwy)
 
-path_py3="/usr/local/python3"
+path_py3="/usr/local"
 path_nginx="/usr/local/nginx"
 
 
@@ -51,8 +49,7 @@ function createTmpDir() {
 
 # install some tools
 function toolsInstall() {
-    # modify nameserver
-    sed -i "s/nameserver.*/nameserver ${nameserver}/g" /etc/resolv.conf
+    yum update -y
     # command sz to download, rz to upload
     yum install -y lrzsz
     # netstat
@@ -103,12 +100,13 @@ function installPython() {
     # install python
     wget ${url_python}
     tar -xzvf Python-3.5.4.tgz
-    mkdir ${path_py3}
     cd Python-3.5.4
-    ./configure --prefix=${path_py3}
+    ./configure
     make && make install
     ln -sf ${path_py3}/bin/python3 /usr/bin/python
     ln -sf ${path_py3}/bin/pip3 /usr/bin/pip
+
+    pip install --upgrade pip
 
     # fix yum's python version
     sed -i "1s/python/python2.7/g" /usr/bin/yum
@@ -147,7 +145,7 @@ function main() {
     log "Create tmp dir..."
     createTmpDir >/dev/null
 
-    log "Modify nameserver and install tools..."
+    log "Install tools..."
     toolsInstall >/dev/null
 
     log "Add groups and users..."
