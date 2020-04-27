@@ -20,8 +20,9 @@ root_dir=${1}
 tmp_dir=${root_dir}/tmp
 config_dir=${root_dir}/config
 
-init_passwd="E2,cEk7eDX.T6fD_"
+# init_passwd='E2,cEk7eDX.T6fD_'
 developers=(lixiong jiangwy)
+ssh_port=1022
 
 path_py3="/usr/local"
 path_nginx="/usr/local/nginx"
@@ -52,8 +53,11 @@ function toolsInstall() {
     yum update -y
     # command sz to download, rz to upload
     yum install -y lrzsz
-    # netstat
+    # network tools
     yum install -y net-tools
+    yum install -y tcpdump
+    # system tools
+    yum install -y sysstat
     # vim
     yum install -y vim
     # vim8 plugin install
@@ -72,13 +76,13 @@ function addGroupsAndUsers() {
     groupadd server
     # add user "server" to run service
     useradd -g server server
-    echo "${init_passwd}" | passwd --stdin server
+    # echo '${init_passwd}' | passwd --stdin server
 
     # group for developers
     groupadd develop
     for user in ${developers[*]}; do
         useradd -g develop ${user}
-        echo "${init_passwd}" | passwd --stdin ${user}
+        # echo "${init_passwd}" | passwd --stdin ${user}
         # add developers to web and server group
         usermod -a -G www ${user}
         usermod -a -G server ${user}
@@ -86,6 +90,18 @@ function addGroupsAndUsers() {
 
     # let /home/* can be accessed by all developers
     chmod 770 /home/*
+}
+
+# security configurations
+function securityConfig() {
+    # change ssh port to 1022
+    sed -i "s/#Port 22/Port ${ssh_port}/g" /etc/ssh/sshd_config 
+    # SELinux config
+    semanage port -a -t ssh_port_t -p tcp ${ssh_port}
+    systemctl restart sshd
+    # firewall config
+    iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22222 -j ACCEPT
+    iptables-save
 }
 
 # install python 3.5.4
@@ -107,10 +123,15 @@ function installPython() {
     ln -sf ${path_py3}/bin/pip3 /usr/bin/pip
 
     pip install --upgrade pip
+}
 
-    # fix yum's python version
+# fix yum's python version
+function fixPythonVersion() {
+    # yum
     sed -i "1s/python/python2.7/g" /usr/bin/yum
     sed -i "1s/python/python2.7/g" /usr/libexec/urlgrabber-ext-down
+    # selinux
+    sed -i "1s/python/python2.7/g" /usr/sbin/semanage
 }
 
 # install nginx 1.18.0
@@ -151,8 +172,14 @@ function main() {
     log "Add groups and users..."
     addGroupsAndUsers >/dev/null
 
+    log "Security Configurations..."
+    securityConfig >/dev/null
+
     log "Install python..."
     installPython >/dev/null
+
+    log "Fix python version"
+    fixPythonVersion >/dev/null
 
     log "Install nginx..."
     installNginx >/dev/null
@@ -164,5 +191,4 @@ function main() {
 }
 
 # start
-unalias cp
 main
