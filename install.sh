@@ -13,6 +13,7 @@ sh -x script/env_deploy.sh `pwd`
 
 ## Deploy server
 # 部署修改uwsgi.ini
+cp -f config/uwsgi.ini /usr/local/etc/uwsgi.ini
 # 启动uwsgi，并添加为启动项
 
 
