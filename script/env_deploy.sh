@@ -5,6 +5,7 @@
 #   2.group and user
 #   3.python 3.5.4
 #   4.nginx 1.18.0
+#   5.uwsgi
 #
 ## Args:
 #   ${1}: root dir
@@ -69,14 +70,13 @@ function toolsInstall() {
 function addGroupsAndUsers() {
     # group for web(nginx)
     groupadd www
-    # forbid remote login
+    # user for nginx (forbid remote login)
     useradd -g www www -s /sbin/nologin
 
     # group for server
     groupadd server
-    # add user "server" to run service
-    useradd -g server server
-    # echo '${init_passwd}' | passwd --stdin server
+    # user for uwsgi (forbid remote login)
+    useradd -g server server -s /sbin/nologin
 
     # group for developers
     groupadd develop
@@ -158,6 +158,11 @@ function installNginx() {
     cp -f ${config_dir}/nginx_dev.conf ${path_nginx}/conf/nginx.conf
 }
 
+# install uwsgi
+function installUwsgi() {
+    pip install uwsgi
+}
+
 
 ## Installation
 
@@ -185,7 +190,7 @@ function main() {
     installNginx >/dev/null
 
     log "Install uwsgi"
-    pip install uwsgi >/dev/null
+    installUwsgi >/dev/null
 
     log "Installation complete!"
 }
