@@ -90,6 +90,14 @@ function addGroupsAndUsers() {
 
     # let /home/* can be accessed by all developers
     chmod 770 /home/*
+
+    # add developers to to sudoers
+    chmod u+w /etc/sudoers
+    line_num=`grep -nP "root\s+ALL=\(ALL\)\s+ALL" /etc/sudoers |cut -d: -f1`
+    for user in ${developers[*]}; do
+        sed -in "${line_num} a ${user}    ALL=\(ALL\)       ALL" /etc/sudoers
+    done
+    chmod u-w /etc/sudoers
 }
 
 # security configurations
@@ -161,6 +169,22 @@ function installNginx() {
 # install uwsgi
 function installUwsgi() {
     pip install uwsgi
+    # create log and pid dir
+    mkdir /var/run/uwsgi/
+    mkdir /var/log/uwsgi/
+    chown server:server /var/run/uwsgi/
+    chown server:server /var/log/uwsgi/
+    # allow developers run uwsgi
+    chmod g+w /var/run/uwsgi/
+    chmod g+w /var/log/uwsgi/
+}
+
+# install mariadb
+function installMariaDB() {
+    yum install -y python-devel gcc mariadb-server mariadb-devel
+    systemctl start mariadb
+    systemctl enable mariadb
+    pip install mysqlclient
 }
 
 
@@ -189,8 +213,11 @@ function main() {
     log "Install nginx..."
     installNginx >/dev/null
 
-    log "Install uwsgi"
+    log "Install uwsgi..."
     installUwsgi >/dev/null
+
+    log "Install MariaDB..."
+    installMariaDB >/dev/null
 
     log "Installation complete!"
 }
