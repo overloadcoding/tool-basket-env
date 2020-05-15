@@ -179,45 +179,34 @@ function installUwsgi() {
     chmod g+w /var/log/uwsgi/
 }
 
-# install mariadb
-function installMariaDB() {
-    yum install -y python-devel gcc mariadb-server mariadb-devel
-    systemctl start mariadb
-    systemctl enable mariadb
-    pip install mysqlclient
-}
-
 
 ## Installation
 
 # main
 function main() {
     log "Create tmp dir..."
-    createTmpDir >/dev/null
+    createTmpDir
 
     log "Install tools..."
-    toolsInstall >/dev/null
+    toolsInstall
 
     log "Add groups and users..."
-    addGroupsAndUsers >/dev/null
+    addGroupsAndUsers
 
     log "Security Configurations..."
-    securityConfig >/dev/null
+    securityConfig
 
     log "Install python..."
-    installPython >/dev/null
+    installPython
 
     log "Fix python version"
-    fixPythonVersion >/dev/null
+    fixPythonVersion
 
     log "Install nginx..."
-    installNginx >/dev/null
+    installNginx
 
     log "Install uwsgi..."
-    installUwsgi >/dev/null
-
-    log "Install MariaDB..."
-    installMariaDB >/dev/null
+    installUwsgi
 
     log "Installation complete!"
 }

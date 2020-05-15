@@ -6,8 +6,9 @@
 
 ## Deploy development environment
 sh -x script/env_deploy.sh `pwd`
-# 初始化 MariaDB
-# mysql_secure_installation
+
+# Install and config MariaDB
+sh -x script/config_maria.sh `pwd`
 
 
 ## Deploy web
