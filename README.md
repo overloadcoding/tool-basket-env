@@ -26,17 +26,23 @@ sh install.sh
 
 ### Nginx 管理维护
 
+nginx 必须以 root 权限运行，否则 `nginx.conf` 中的 user 设置不生效，且因为缺少权限运行不起来
+
 ```shell
-# nginx
+# start nginx
+sudo nginx
 
 # test nginx.conf syntax
-# nginx -t
+sudo nginx -t
+
 # reload nginx.conf
-# nginx -s reload
+sudo nginx -s reload
+
 # restart Nginx
-# nginx -s reopen
+sudo nginx -s reopen
+
 # stop Nginx
-# nginx -s stop
+sudo nginx -s stop
 ```
 
 ### uwsgi管理维护

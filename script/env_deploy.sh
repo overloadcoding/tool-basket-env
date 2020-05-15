@@ -107,8 +107,11 @@ function securityConfig() {
     # SELinux config
     semanage port -a -t ssh_port_t -p tcp ${ssh_port}
     systemctl restart sshd
+
     # firewall config
-    iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 22222 -j ACCEPT
+    iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport ${ssh_port} -j ACCEPT
+    # open port 80
+    iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
     iptables-save
 }
 
