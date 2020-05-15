@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Environment initialization
+## Setup base environment
 #   1.tools
 #   2.group and user
 #   3.python 3.5.4
@@ -131,6 +131,9 @@ function installPython() {
     ln -sf ${path_py3}/bin/pip3 /usr/bin/pip
 
     pip install --upgrade pip
+
+    # install opencv-python shared lib
+    yum install -y libSM-1.2.2-2.el7.x86_64 libXext-1.3.3-3.el7.x86_64 --setopt=protected_multilib=false
 }
 
 # fix yum's python version
@@ -164,6 +167,19 @@ function installNginx() {
 
     # config nginx
     cp -f ${config_dir}/nginx_dev.conf ${path_nginx}/conf/nginx.conf
+
+    # create log and pid dir
+    mkdir /var/run/nginx/
+    mkdir /var/log/nginx/
+    chown www:www /var/run/nginx/
+    chown www:www /var/log/nginx/
+    # allow developers run nginx
+    chmod g+w /var/run/nginx/
+    chmod g+w /var/log/nginx/
+
+    # allow developers modify nginx configurations
+    chgrp -R develop ${path_nginx}/conf/
+    chmod g+w -R ${path_nginx}/conf/
 }
 
 # install uwsgi

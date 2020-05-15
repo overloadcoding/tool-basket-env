@@ -5,8 +5,8 @@
 
 
 ## Deploy development environment
+# setup base environment
 sh -x script/env_deploy.sh `pwd`
-
 # Install and config MariaDB
 sh -x script/config_maria.sh `pwd`
 
@@ -15,8 +15,10 @@ sh -x script/config_maria.sh `pwd`
 
 
 ## Deploy server
-# 部署修改 uwsgi.ini
+# uwsgi configuration backup
 cp -f config/uwsgi.ini /usr/local/etc/uwsgi.ini
+# deploy django project
+sh -x script/deploy_django.sh `pwd`
 
 
 ## Start nginx

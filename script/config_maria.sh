@@ -15,7 +15,7 @@ function log() {
 }
 
 function installMariaDB() {
-    yum install -y python-devel gcc mariadb-server mariadb-devel
+    yum install -y gcc mariadb-server mariadb-devel
     systemctl start mariadb
     systemctl enable mariadb
     pip install mysqlclient
@@ -41,6 +41,8 @@ function config_django_db() {
     # execute sql script
     echo "Please input MariaDB root's password"
     mysql -uroot -p < script/config_db.sql
+
+    cp -f script/config_db.sql /home/server/
 }
 
 
