@@ -112,7 +112,7 @@ function securityConfig() {
     iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport ${ssh_port} -j ACCEPT
     # open port 80
     iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-    iptables-save
+    iptables-save > /etc/sysconfig/iptables
 }
 
 # install python 3.5.4
