@@ -82,12 +82,32 @@ pkill -kill -t pts/0
 
 ### 安全相关
 
+#### 审计
+
 ```shell
-# firewall
+# 查看登陆日志
+last
+# 查看登陆失败日志
+lastb
+```
+
+#### 防火墙
+
+```shell
+# 查看当前规则
+iptables --line-numbers -L INPUT
 # 添加 IP 黑名单
+iptables -I INPUT -s 195.54.160.180 -j DROP
+# 保存配置
+iptables-save > /etc/sysconfig/iptables
+# 恢复配置
+iptables-restore < /etc/sysconfig/iptables
+```
 
+#### SELinux
+
+```shell
 # SELinux 管理
-
 ```
 
 ## 待完成
