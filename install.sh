@@ -4,6 +4,11 @@
 #   1.Environment configuration
 
 
+## System setting
+# time set
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+
 ## Deploy development environment
 # setup base environment
 sh -x script/env_deploy.sh `pwd`

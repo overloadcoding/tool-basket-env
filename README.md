@@ -87,8 +87,15 @@ pkill -kill -t pts/0
 ```shell
 # 查看登陆日志
 last
+# 登陆记录
+lastlog
+
 # 查看登陆失败日志
 lastb
+lastb -a |awk '{print $10}' |sort |uniq
+grep "authentication failure;" /var/log/secure
+# 清空登陆失败日志
+echo > /var/log/btmp
 ```
 
 #### 防火墙
@@ -117,3 +124,8 @@ iptables-restore < /etc/sysconfig/iptables
 - nginx 并发数配置
 - nginx 其他性能优化项配置
 - nginx代理到uwsgi的请求404的情况
+
+安全
+
+- 重启时恢复iptables配置
+- 定时脚本添加ip黑名单，封锁黑ip
