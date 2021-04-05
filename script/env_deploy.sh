@@ -3,7 +3,7 @@
 ## Setup base environment
 #   1.tools
 #   2.group and user
-#   3.python 3.5.4
+#   3.python 3.7.9
 #   4.nginx 1.18.0
 #   5.uwsgi
 #
@@ -13,7 +13,7 @@
 
 ## Resource and params
 
-url_python="https://www.python.org/ftp/python/3.5.4/Python-3.5.4.tgz"
+url_python="https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz"
 url_pcre="https://sourceforge.net/projects/pcre/files/pcre/8.44/pcre-8.44.tar.gz"
 url_nginx="http://nginx.org/download/nginx-1.18.0.tar.gz"
 
@@ -115,7 +115,7 @@ function securityConfig() {
     iptables-save > /etc/sysconfig/iptables
 }
 
-# install python 3.5.4
+# install python 3.7.9
 function installPython() {
     cd ${tmp_dir}
     # install dependencies

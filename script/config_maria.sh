@@ -18,6 +18,7 @@ function installMariaDB() {
     yum install -y gcc mariadb-server mariadb-devel
     systemctl start mariadb
     systemctl enable mariadb
+    # database driver
     pip install mysqlclient
 }
 
