@@ -125,9 +125,13 @@ function installPython() {
     yum install -y libffi-devel
 
     # install python
+    # curl -k ${url_python} -o python.tgz
+    # mkdir python
+    # tar xzf python.tgz -C python --strip-components 1
+    # cd python
     wget ${url_python}
-    tar -xzvf Python-3.5.4.tgz
-    cd Python-3.5.4
+    tar -xzvf Python-3.7.9.tgz
+    cd Python-3.7.9
     ./configure
     make && make install
     ln -sf ${path_py3}/bin/python3 /usr/bin/python
